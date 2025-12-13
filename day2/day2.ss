@@ -1,4 +1,4 @@
-(import (rnrs) (io-lines))
+(import (rnrs) (AoC-2025))
 
 (define parse-input
   (lambda (input)
@@ -14,11 +14,8 @@
                          (sep-loop (cdr reml)
                                    (lambda (x)
                                      (k (cons (car reml) x))))))))))
-      (map (lambda (x)
-             (map (lambda (y)
-                    (string->number (list->string y)))
-                  x))
-           (map (lambda (x) (separate x #\-))
+      (map (partial map (compose string->number list->string))
+           (map (partial (flip separate) #\-)
                 (separate (string->list input) #\,))))))
 
 (define reduplicated-number?
@@ -68,10 +65,8 @@
   (lambda (input pred)
     (fold-right +
                 0
-                (map (lambda (repeated)
-                       (fold-right + 0 repeated))
-                     (map (lambda (range)
-                            (filter pred range))
+                (map (partial fold-right + 0)
+                     (map (partial filter pred)
                           (map make-range (parse-input input)))))))
 
 (let ((input (car (file->lines "input"))))
