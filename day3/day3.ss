@@ -1,4 +1,4 @@
-(import (rnrs) (io-lines))
+(import (rnrs) (AoC-2025))
 
 (define highest-joltage-n
   (lambda (l n)
@@ -31,8 +31,7 @@
   (lambda (input n)
     (fold-right +
                 0
-                (map (lambda (input-line)
-                       (highest-joltage-n input-line n))
+                (map (partial (flip highest-joltage-n) n)
                      input))))
 
 (let ((input (map string->list (file->lines "input"))))
