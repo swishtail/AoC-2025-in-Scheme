@@ -1,4 +1,4 @@
-(import (rnrs) (io-lines))
+(import (rnrs) (AoC-2025))
 
 (define parse-line
   (lambda (l)
