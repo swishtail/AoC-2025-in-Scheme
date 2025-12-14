@@ -89,9 +89,7 @@
     (fold-right +
                 0
                 (map number-in-range
-                     (no-overlap
-                      (sort-ranges
-                       (parse-ranges input)))))))
+                     (no-overlap (sort-ranges (parse-ranges input)))))))
 
 (let ((input (file->lines "input")))
   (display (count-fresh input)) (newline) ; Part 1
