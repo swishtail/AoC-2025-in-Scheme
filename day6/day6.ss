@@ -87,5 +87,5 @@
                      (parse-strings-cephalopod input)))))
 
 (let ((input (file->lines "input")))
-  (display (part1 input)) (newline)
-  (display (part2 input)) (newline))
+  (display (part1 input)) (newline)  ; Part 1
+  (display (part2 input)) (newline)) ; Part 2
