@@ -8,11 +8,10 @@
           matrix-width
           matrix-set!
           matrix-map
-
+          
           partial
           flip
           compose
-          compose-apply
           
           for)
   
@@ -53,11 +52,11 @@
   (define matrix-ref
     (lambda (v m n)
       (vector-ref (vector-ref v m) n)))
-
+  
   (define matrix-height
     (lambda (m)
       (vector-length m)))
-
+  
   (define matrix-width
     (lambda (m)
       (vector-length (vector-ref m 0))))
@@ -78,12 +77,12 @@
     (lambda (proc . args)
       (lambda new-args
         (apply proc (append args new-args)))))
-
+  
   (define flip
     (lambda (proc)
       (lambda (a b)
         (proc b a))))
-
+  
   (define compose
     (lambda p
       (lambda x
@@ -91,7 +90,7 @@
           (if (null? (cdr procs))
               (apply (car procs) x)
               ((car procs) (next-proc (cdr procs))))))))
-
+  
   (define compose-apply
     (lambda i
       (let next-item ((items i))
