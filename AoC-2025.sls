@@ -1,22 +1,22 @@
 (library (AoC-2025)
-  
+
   (export file->lines
-          
+
           make-matrix
           matrix-ref
           matrix-height
           matrix-width
           matrix-set!
           matrix-map
-          
+
           partial
           flip
           compose
-          
+
           for)
-  
+
   (import (rnrs))
-  
+
   (define file->lines
     (lambda (filename)
       (call-with-input-file filename
@@ -38,7 +38,7 @@
                   (cons current-line
                         (next-line (read-line)))
                   '())))))))
-  
+
   (define make-matrix
     (lambda (m n . fill)
       (let ((newv (make-vector m)))
@@ -48,25 +48,25 @@
                                        0
                                        (car fill))))
                     newv))))
-  
+
   (define matrix-ref
     (lambda (v m n)
       (vector-ref (vector-ref v m) n)))
-  
+
   (define matrix-height
     (lambda (m)
       (vector-length m)))
-  
+
   (define matrix-width
     (lambda (m)
       (vector-length (vector-ref m 0))))
-  
+
   (define matrix-set!
     (lambda (v m n val)
       (let ((newv (vector-ref v m)))
         (vector-set! newv n val)
         (vector-set! v m newv))))
-  
+
   (define matrix-map
     (lambda (f v)
       (vector-map (lambda (x)
@@ -77,12 +77,12 @@
     (lambda (proc . args)
       (lambda new-args
         (apply proc (append args new-args)))))
-  
+
   (define flip
     (lambda (proc)
       (lambda (a b)
         (proc b a))))
-  
+
   (define compose
     (lambda p
       (lambda x
@@ -90,14 +90,7 @@
           (if (null? (cdr procs))
               (apply (car procs) x)
               ((car procs) (next-proc (cdr procs))))))))
-  
-  (define compose-apply
-    (lambda i
-      (let next-item ((items i))
-        (if (null? (cdr items))
-            (car items)
-            ((car items) (next-item (cdr items)))))))
-  
+
   (define-syntax for
     (syntax-rules ()
       ((for (init pred tail) exps ...)
