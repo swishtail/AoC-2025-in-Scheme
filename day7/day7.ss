@@ -2,23 +2,16 @@
 
 (define parse-input
   (lambda (input)
-    (letrec ((contains-splitters?
-              (lambda (l)
-                (if (null? l)
-                    #f
-                    (if (char=? (car l) #\^)
-                        #t
-                        (contains-splitters? (cdr l))))))
-             (splitter-indices
-              (lambda (l)
-                (let loop ((i 0) (l l))
-                  (if (null? l)
-                      '()
-                      (if (char=? (car l) #\^)
-                          (cons i (loop (+ i 1) (cdr l)))
-                          (loop (+ i 1) (cdr l))))))))
+    (let ((splitter-indices
+           (lambda (l)
+             (let loop ((i 0) (l l))
+               (if (null? l)
+                   '()
+                   (if (char=? (car l) #\^)
+                       (cons i (loop (+ i 1) (cdr l)))
+                       (loop (+ i 1) (cdr l))))))))
       (map splitter-indices
-           (filter contains-splitters?
+           (filter (partial exists (partial char=? #\^))
                    (map string->list (cdr input)))))))
 
 (define intersection
@@ -111,8 +104,7 @@
 
 (define manifold
   (lambda (splitters)
-    (let loop ((new-beams (list (list (caar splitters) 1)))
-               (splitters splitters))
+    (let loop ((new-beams `((,(caar splitters) 1))) (splitters splitters))
       (if (null? splitters)
           new-beams
           (let ((beams-to-split (intersection new-beams (car splitters)))
