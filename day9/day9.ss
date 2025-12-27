@@ -1,5 +1,15 @@
 (import (rnrs) (AoC-2025))
 
+(define-record-type tile (fields x y))
+
+(define-record-type corner-pair
+  (fields a b area)
+  (protocol
+   (lambda (new)
+     (lambda (a b)
+       (new a b (* (+ (abs (- (tile-x a) (tile-x b))) 1)
+                   (+ (abs (- (tile-y a) (tile-y b))) 1)))))))
+
 (define parse-input
   (lambda (input)
     (letrec ((separate
@@ -10,9 +20,10 @@
                       (loop (cdr l)
                             (lambda (x)
                               (k (cons (car l) x)))))))))
-      (map (partial map (compose string->number list->string))
-           (map separate
-                (map string->list input))))))
+      (map (partial apply make-tile)
+           (map (partial map (compose string->number list->string))
+                (map separate
+                     (map string->list input)))))))
 
 (define corner-pairs
   (lambda (tiles)
@@ -22,20 +33,16 @@
           (let inner ((x (car tiles)) (remt (cdr tiles)))
             (if (null? remt)
                 (outer (cdr tiles))
-                (cons (list (car tiles) (car remt))
+                (cons (make-corner-pair (car tiles) (car remt))
                       (inner x (cdr remt)))))))))
-
-(define rectangle-area
-  (lambda (corner-pair)
-    (* (+ (abs (- (caar corner-pair) (caadr corner-pair))) 1)
-       (+ (abs (- (cadar corner-pair) (cadadr corner-pair))) 1))))
 
 (define part1
   (lambda (input)
-    (car
-     (list-sort >
-                (map rectangle-area
-                     (corner-pairs input))))))
+    (corner-pair-area
+     (car
+      (list-sort (lambda (a b)
+                   (> (corner-pair-area a) (corner-pair-area b)))
+                 (corner-pairs input))))))
 
 (let ((input (parse-input (file->lines "input"))))
   (display (part1 input)) (newline))
